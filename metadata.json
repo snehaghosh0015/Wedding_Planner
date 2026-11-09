@@ -1,0 +1,8 @@
+{
+  "name": "EverAfter - Wedding Planner & Architectural Spec",
+  "description": "Mobile-first wedding planner application featuring guest and couple portals, interactive storyline timeline, live photo album with 24-hour disappearing stories, RSVP logistics, budget tracker, server-side Gemini AI assistant, and honeymoon matchmaker alongside full architectural specifications.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
