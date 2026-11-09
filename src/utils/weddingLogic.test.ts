@@ -151,9 +151,27 @@ test('calculateRsvpStats tallies confirmed, dietary needs, and plus-ones', () =>
   const filtered = filterGuests(guests, 'Confirmed');
   assert.equal(filtered.length, 2);
 
-  const searchFiltered = filterGuests(guests, 'All', 'Marco');
-  assert.equal(searchFiltered.length, 1);
-  assert.equal(searchFiltered[0].name, 'Sofia Rossi');
+  // Search by primary guest name (case-insensitive & partial)
+  const searchSofia = filterGuests(guests, 'All', 'sof');
+  assert.equal(searchSofia.length, 1);
+  assert.equal(searchSofia[0].name, 'Sofia Rossi');
+
+  // Search by plus-one guest name
+  const searchPlusOne = filterGuests(guests, 'All', 'Marco');
+  assert.equal(searchPlusOne.length, 1);
+  assert.equal(searchPlusOne[0].name, 'Sofia Rossi');
+
+  // Search with no matches
+  const searchNone = filterGuests(guests, 'All', 'NonExistent');
+  assert.equal(searchNone.length, 0);
+
+  // Combined status and search query
+  const searchCombined = filterGuests(guests, 'Confirmed', 'David');
+  assert.equal(searchCombined.length, 1);
+  assert.equal(searchCombined[0].name, 'David Chen');
+
+  const searchMismatchedStatus = filterGuests(guests, 'Declined', 'David');
+  assert.equal(searchMismatchedStatus.length, 0);
 });
 
 test('matchHoneymoonDestinations scores destinations based on budget and vibes', () => {

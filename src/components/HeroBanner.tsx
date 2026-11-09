@@ -6,12 +6,16 @@ interface HeroBannerProps {
   currentRole: UserRole;
   onSwitchRole: (role: UserRole) => void;
   weddingDateStr: string;
+  waxSealUrl?: string;
+  onOpenRomanticSettings?: () => void;
 }
 
 export const HeroBanner: React.FC<HeroBannerProps> = ({
   currentRole,
   onSwitchRole,
   weddingDateStr,
+  waxSealUrl = '/src/assets/images/vintage_wax_seal_crest_1794235743246.jpg',
+  onOpenRomanticSettings,
 }) => {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -54,47 +58,74 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
         {/* Cinematic Gradient Scrim */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/30" />
 
-        {/* Top Badges: Role switcher floating pill */}
+        {/* Top Badges: Role switcher floating pill and Ambiance trigger */}
         <div className="relative z-20 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-          <div className="self-start flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-xs border border-white/20">
+          <div className="self-start flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-xs border border-white/20 shadow-sm">
             <Heart className="w-3.5 h-3.5 text-rose-400 fill-current" />
             <span className="font-serif tracking-wide">E & J · September 18, 2027</span>
           </div>
 
-          {/* Interactive Role Switcher Pill */}
-          <div className="self-start sm:self-auto flex items-center gap-1 bg-black/60 backdrop-blur-md p-1 rounded-xl border border-white/20 text-xs">
-            <button
-              onClick={() => onSwitchRole('Couple')}
-              className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
-                currentRole === 'Couple'
-                  ? 'bg-rose-600 text-white shadow-xs'
-                  : 'text-white/80 hover:text-white'
-              }`}
-            >
-              Couple Mode (Admin)
-            </button>
-            <button
-              onClick={() => onSwitchRole('Guest')}
-              className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
-                currentRole === 'Guest'
-                  ? 'bg-rose-600 text-white shadow-xs'
-                  : 'text-white/80 hover:text-white'
-              }`}
-            >
-              Guest Mode (Viewer)
-            </button>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {onOpenRomanticSettings && (
+              <button
+                onClick={onOpenRomanticSettings}
+                className="flex items-center gap-1.5 bg-black/60 hover:bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-amber-300/40 text-amber-200 text-xs font-serif transition-colors"
+                title="Open Romantic Ambiance & Vows"
+              >
+                <span>🕯️</span>
+                <span className="font-sans font-medium">Romantic Settings</span>
+              </button>
+            )}
+
+            {/* Interactive Role Switcher Pill */}
+            <div className="flex items-center gap-1 bg-black/60 backdrop-blur-md p-1 rounded-xl border border-white/20 text-xs">
+              <button
+                onClick={() => onSwitchRole('Couple')}
+                className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
+                  currentRole === 'Couple'
+                    ? 'bg-rose-600 text-white shadow-xs'
+                    : 'text-white/80 hover:text-white'
+                }`}
+              >
+                Couple Mode (Admin)
+              </button>
+              <button
+                onClick={() => onSwitchRole('Guest')}
+                className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
+                  currentRole === 'Guest'
+                    ? 'bg-rose-600 text-white shadow-xs'
+                    : 'text-white/80 hover:text-white'
+                }`}
+              >
+                Guest Mode (Viewer)
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Hero Title & Countdown Details */}
         <div className="relative z-20 flex flex-col md:flex-row md:items-end justify-between gap-5 text-white pt-6">
-          <div className="space-y-1.5 max-w-xl">
-            <span className="text-[11px] sm:text-xs font-mono tracking-widest text-rose-300 uppercase font-semibold">
-              Celebrating The Marriage Of
-            </span>
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-serif tracking-tight text-white leading-tight">
-              Elena Vance & Julian Hayes
-            </h1>
+          <div className="space-y-2 max-w-xl">
+            <div className="flex items-center gap-3">
+              {waxSealUrl && (
+                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full overflow-hidden shadow-lg border-2 border-amber-200/80 shrink-0">
+                  <img
+                    src={waxSealUrl}
+                    alt="E & J Wax Seal Monogram"
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+              )}
+              <div>
+                <span className="text-[11px] sm:text-xs font-mono tracking-widest text-amber-200 uppercase font-semibold block">
+                  Celebrating The Marriage Of
+                </span>
+                <h1 className="text-2xl sm:text-4xl md:text-5xl font-serif tracking-tight text-white leading-tight">
+                  Elena Vance & Julian Hayes
+                </h1>
+              </div>
+            </div>
             <p className="text-xs sm:text-sm text-stone-200 flex items-center gap-1.5 pt-0.5">
               <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
               <span>Villa La Selva Estate · Tuscany, Italy</span>

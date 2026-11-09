@@ -39,6 +39,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           return (
             <button
               key={tab.id}
+              data-testid={`mobile-nav-${tab.id}`}
               onClick={() => onSelectTab(tab.id)}
               className={`flex flex-col items-center justify-center flex-1 py-1 focus:outline-none transition-colors ${
                 isActive ? 'text-rose-700 font-semibold' : 'text-stone-500 hover:text-stone-800'

@@ -334,28 +334,42 @@ export const LogisticsAndRsvp: React.FC<LogisticsAndRsvpProps> = ({
                 <h3 className="text-base font-serif text-stone-900">
                   Guest Directory
                 </h3>
-                <span className="text-xs text-stone-500">
+                <span className="text-xs text-stone-500 font-mono">
                   ({filteredList.length} of {guests.length})
                 </span>
               </div>
 
-              <div className="flex items-center gap-2">
-                {/* Search Bar */}
-                <div className="relative flex-1 sm:w-56">
-                  <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-stone-400" />
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                {/* Search Input Field */}
+                <div className="relative flex-1 sm:w-64">
+                  <label htmlFor="guest-search-input" className="sr-only">
+                    Search guest list by name
+                  </label>
+                  <Search className="w-4 h-4 absolute left-3 top-2.5 text-stone-400 pointer-events-none" />
                   <input
+                    id="guest-search-input"
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search guest or plus-one..."
-                    className="w-full pl-8 pr-3 py-1.5 text-xs border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20"
+                    placeholder="Search guest by name..."
+                    className="w-full pl-9 pr-8 py-2 text-xs border border-stone-300 rounded-xl bg-stone-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all placeholder:text-stone-400"
                   />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      aria-label="Clear search query"
+                      className="absolute right-2.5 top-2.5 text-stone-400 hover:text-stone-600 p-0.5 rounded-full"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
 
                 {userRole === 'Couple' && (
                   <button
                     onClick={() => setIsAddGuestOpen(true)}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-stone-900 hover:bg-stone-800 rounded-xl whitespace-nowrap"
+                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-stone-900 hover:bg-stone-800 rounded-xl whitespace-nowrap shadow-xs active:scale-95 transition-all"
                   >
                     <UserPlus className="w-3.5 h-3.5" />
                     <span>Add Guest</span>
@@ -365,103 +379,142 @@ export const LogisticsAndRsvp: React.FC<LogisticsAndRsvpProps> = ({
             </div>
 
             {/* Filter Tabs */}
-            <div className="px-4 py-2 bg-stone-50 border-b border-stone-100 flex items-center gap-1 overflow-x-auto text-xs">
-              {(['All', 'Confirmed', 'Pending', 'Declined'] as const).map((status) => (
-                <button
-                  key={status}
-                  onClick={() => setStatusFilter(status)}
-                  className={`px-3 py-1 rounded-lg font-medium transition-colors ${
-                    statusFilter === status
-                      ? 'bg-stone-900 text-white'
-                      : 'text-stone-600 hover:bg-stone-200/60'
-                  }`}
-                >
-                  {status}
-                </button>
-              ))}
+            <div className="px-4 py-2 bg-stone-50 border-b border-stone-100 flex items-center justify-between gap-2 overflow-x-auto text-xs">
+              <div className="flex items-center gap-1">
+                {(['All', 'Confirmed', 'Pending', 'Declined'] as const).map((status) => (
+                  <button
+                    key={status}
+                    onClick={() => setStatusFilter(status)}
+                    className={`px-3 py-1 rounded-lg font-medium transition-colors ${
+                      statusFilter === status
+                        ? 'bg-stone-900 text-white'
+                        : 'text-stone-600 hover:bg-stone-200/60'
+                    }`}
+                  >
+                    {status}
+                  </button>
+                ))}
+              </div>
+
+              {searchQuery && (
+                <div className="text-[11px] text-stone-500 shrink-0 flex items-center gap-1.5">
+                  <span>Filtered by: &ldquo;<strong className="text-stone-800">{searchQuery}</strong>&rdquo;</span>
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="text-rose-700 hover:text-rose-800 underline font-medium"
+                  >
+                    Reset
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Table Rows */}
-            <div className="divide-y divide-stone-100 overflow-x-auto">
-              {filteredList.map((guest) => (
-                <div
-                  key={guest.id}
-                  className="p-4 hover:bg-stone-50/70 transition-colors flex items-center justify-between gap-4 text-xs"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-stone-100 text-stone-700 flex items-center justify-center font-semibold text-xs shrink-0">
-                      {guest.name.charAt(0)}
+            {/* Table Rows or Empty State */}
+            {filteredList.length === 0 ? (
+              <div className="p-10 text-center space-y-2.5">
+                <div className="w-10 h-10 rounded-full bg-stone-100 text-stone-400 mx-auto flex items-center justify-center">
+                  <Search className="w-5 h-5" />
+                </div>
+                <p className="text-sm font-medium text-stone-800">
+                  {searchQuery ? `No guests found matching "${searchQuery}"` : 'No guests in this category.'}
+                </p>
+                <p className="text-xs text-stone-500 max-w-sm mx-auto">
+                  {searchQuery
+                    ? 'Check spelling or clear the search query to see the complete guest directory.'
+                    : 'Invited guests with this RSVP status will appear here.'}
+                </p>
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="mt-2 inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-stone-700 bg-stone-100 hover:bg-stone-200 rounded-lg transition-colors"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                    <span>Clear Search Filter</span>
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="divide-y divide-stone-100 overflow-x-auto">
+                {filteredList.map((guest) => (
+                  <div
+                    key={guest.id}
+                    className="p-4 hover:bg-stone-50/70 transition-colors flex items-center justify-between gap-4 text-xs"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded-full bg-stone-100 text-stone-700 flex items-center justify-center font-semibold text-xs shrink-0">
+                        {guest.name.charAt(0)}
+                      </div>
+
+                      <div className="min-w-0">
+                        <p className="font-semibold text-stone-900 truncate">
+                          {guest.name}
+                        </p>
+                        <p className="text-stone-500 truncate text-[11px]">
+                          {guest.email}
+                        </p>
+                        {guest.hasPlusOne && guest.plusOneName && (
+                          <p className="text-[11px] text-rose-800 truncate mt-0.5">
+                            +1: {guest.plusOneName}
+                          </p>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="min-w-0">
-                      <p className="font-semibold text-stone-900 truncate">
-                        {guest.name}
-                      </p>
-                      <p className="text-stone-500 truncate text-[11px]">
-                        {guest.email}
-                      </p>
-                      {guest.hasPlusOne && guest.plusOneName && (
-                        <p className="text-[11px] text-rose-800 truncate mt-0.5">
-                          +1: {guest.plusOneName}
-                        </p>
+                    <div className="flex items-center gap-4 shrink-0">
+                      {/* Dietary */}
+                      <div className="hidden sm:flex items-center gap-1 text-stone-600">
+                        <Utensils className="w-3 h-3 text-stone-400" />
+                        <span>{guest.dietary}</span>
+                      </div>
+
+                      {/* Table Assignment */}
+                      {guest.tableNumber && (
+                        <span className="hidden md:inline-block font-mono text-stone-500 text-[11px]">
+                          Table {guest.tableNumber}
+                        </span>
+                      )}
+
+                      {/* Status Pill */}
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-[11px] font-semibold ${
+                          guest.status === 'Confirmed'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80'
+                            : guest.status === 'Declined'
+                            ? 'bg-stone-100 text-stone-500'
+                            : 'bg-amber-50 text-amber-700 border border-amber-200/80'
+                        }`}
+                      >
+                        {guest.status}
+                      </span>
+
+                      {/* Couple Quick Actions */}
+                      {userRole === 'Couple' && (
+                        <div className="flex items-center gap-1">
+                          {guest.status !== 'Confirmed' && (
+                            <button
+                              onClick={() => onUpdateGuestStatus(guest.id, 'Confirmed')}
+                              title="Mark as Confirmed"
+                              className="p-1 text-emerald-600 hover:bg-emerald-50 rounded-md"
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                          {guest.status !== 'Declined' && (
+                            <button
+                              onClick={() => onUpdateGuestStatus(guest.id, 'Declined')}
+                              title="Mark as Declined"
+                              className="p-1 text-stone-400 hover:text-rose-600 hover:bg-rose-50 rounded-md"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-4 shrink-0">
-                    {/* Dietary */}
-                    <div className="hidden sm:flex items-center gap-1 text-stone-600">
-                      <Utensils className="w-3 h-3 text-stone-400" />
-                      <span>{guest.dietary}</span>
-                    </div>
-
-                    {/* Table Assignment */}
-                    {guest.tableNumber && (
-                      <span className="hidden md:inline-block font-mono text-stone-500 text-[11px]">
-                        Table {guest.tableNumber}
-                      </span>
-                    )}
-
-                    {/* Status Pill */}
-                    <span
-                      className={`px-2.5 py-1 rounded-full text-[11px] font-semibold ${
-                        guest.status === 'Confirmed'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80'
-                          : guest.status === 'Declined'
-                          ? 'bg-stone-100 text-stone-500'
-                          : 'bg-amber-50 text-amber-700 border border-amber-200/80'
-                      }`}
-                    >
-                      {guest.status}
-                    </span>
-
-                    {/* Couple Quick Actions */}
-                    {userRole === 'Couple' && (
-                      <div className="flex items-center gap-1">
-                        {guest.status !== 'Confirmed' && (
-                          <button
-                            onClick={() => onUpdateGuestStatus(guest.id, 'Confirmed')}
-                            title="Mark as Confirmed"
-                            className="p-1 text-emerald-600 hover:bg-emerald-50 rounded-md"
-                          >
-                            <Check className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                        {guest.status !== 'Declined' && (
-                          <button
-                            onClick={() => onUpdateGuestStatus(guest.id, 'Declined')}
-                            title="Mark as Declined"
-                            className="p-1 text-stone-400 hover:text-rose-600 hover:bg-rose-50 rounded-md"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       ) : (
@@ -524,6 +577,31 @@ export const LogisticsAndRsvp: React.FC<LogisticsAndRsvpProps> = ({
                   <p className="text-[11px] text-stone-500 leading-relaxed">
                     {weddingDetails.venue.dressCodeDetails}
                   </p>
+                </div>
+
+                {/* Romantic Banquet Tablescape Picture Showcase */}
+                <div className="rounded-2xl overflow-hidden border border-stone-200 bg-stone-100 shadow-xs space-y-2">
+                  <div className="relative aspect-16/10">
+                    <img
+                      src="/src/assets/images/wedding_tablescape_candlelight_1794235742765.jpg"
+                      alt="Candlelit Banquet Tablescape"
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex items-end p-3">
+                      <div>
+                        <span className="text-[10px] font-mono uppercase text-amber-300 font-semibold tracking-wider">
+                          Evening Reception
+                        </span>
+                        <p className="text-xs font-serif font-bold text-white">
+                          Candlelit Courtyard Banquet Setting
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3 pt-1 text-[11px] text-stone-600 leading-relaxed">
+                    Cascading garden roses, fresh olive branch garlands, and tapered beeswax candles under Tuscan twilight festoon lights.
+                  </div>
                 </div>
               </div>
 

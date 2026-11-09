@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Calendar, MapPin, Quote, Sparkles, Heart } from 'lucide-react';
 import { StoryMilestone, UserRole } from '../types/wedding';
+import { OliveBranchFlourish } from './RomanticFlourish';
 
 interface StorylineTimelineProps {
   milestones: StoryMilestone[];
@@ -148,9 +149,14 @@ export const StorylineTimeline: React.FC<StorylineTimelineProps> = ({
 
               {/* Quote Block */}
               {m.quote && (
-                <div className="bg-rose-50/60 rounded-xl p-3.5 border border-rose-100/70 text-xs sm:text-sm text-rose-950 italic flex items-start gap-2.5">
-                  <Quote className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                  <span>{m.quote}</span>
+                <div className="bg-[#FAF7F2] rounded-xl p-4 border border-amber-200/60 text-xs sm:text-sm text-stone-800 space-y-1.5 shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <Quote className="w-4 h-4 text-rose-500/70 shrink-0" />
+                    <OliveBranchFlourish className="w-24 h-4 text-rose-800/40" />
+                  </div>
+                  <p className="font-serif italic text-stone-800 leading-relaxed text-sm sm:text-base">
+                    {m.quote}
+                  </p>
                 </div>
               )}
             </article>

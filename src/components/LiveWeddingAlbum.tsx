@@ -96,7 +96,7 @@ export const LiveWeddingAlbum: React.FC<LiveWeddingAlbumProps> = ({
       <div className="bg-white rounded-3xl p-4 sm:p-5 border border-stone-200/80 shadow-xs space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+            <Clock className="w-4 h-4 text-rose-600" />
             <h3 className="text-sm font-semibold tracking-tight text-stone-900">
               Wedding Week Stories
             </h3>
@@ -272,11 +272,12 @@ export const LiveWeddingAlbum: React.FC<LiveWeddingAlbumProps> = ({
                 <label className="block text-xs font-semibold text-stone-700 mb-1">
                   Choose Photo Sample
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-4 gap-2">
                   {[
-                    '/src/assets/images/live_album_moment_1794230269470.jpg',
+                    '/src/assets/images/wedding_tablescape_candlelight_1794235742765.jpg',
+                    '/src/assets/images/story_florence_rainstorm_1794235743505.jpg',
+                    '/src/assets/images/vintage_wax_seal_crest_1794235743246.jpg',
                     '/src/assets/images/venue_villa_estate_1794230269596.jpg',
-                    '/src/assets/images/story_proposal_moment_1794230267202.jpg',
                   ].map((imgSrc, i) => (
                     <button
                       key={i}
@@ -312,6 +313,7 @@ export const LiveWeddingAlbum: React.FC<LiveWeddingAlbumProps> = ({
                   <option value="Portraits">Portraits</option>
                   <option value="Decor">Decor</option>
                   <option value="Couple">Couple</option>
+                  <option value="Tablescape">Tablescape</option>
                 </select>
               </div>
 
@@ -375,11 +377,12 @@ export const LiveWeddingAlbum: React.FC<LiveWeddingAlbumProps> = ({
                 <label className="block text-xs font-semibold text-stone-700 mb-1">
                   Story Image Snapshot
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-4 gap-2">
                   {[
+                    '/src/assets/images/wedding_tablescape_candlelight_1794235742765.jpg',
                     '/src/assets/images/venue_villa_estate_1794230269596.jpg',
+                    '/src/assets/images/story_florence_rainstorm_1794235743505.jpg',
                     '/src/assets/images/story_proposal_moment_1794230267202.jpg',
-                    '/src/assets/images/live_album_moment_1794230269470.jpg',
                   ].map((imgSrc, i) => (
                     <button
                       key={i}

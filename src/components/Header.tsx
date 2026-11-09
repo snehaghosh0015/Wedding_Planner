@@ -7,6 +7,8 @@ interface HeaderProps {
   onOpenAuthModal: () => void;
   activeTab: string;
   onSelectTab: (tabId: string) => void;
+  onOpenRomanticSettings: () => void;
+  isCandlelit: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -15,6 +17,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAuthModal,
   activeTab,
   onSelectTab,
+  onOpenRomanticSettings,
+  isCandlelit,
 }) => {
   const navItems = [
     { id: 'timeline', label: 'Story' },
@@ -31,14 +35,24 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Zone 1: Single text element wordmark */}
         <button
           onClick={() => onSelectTab('timeline')}
-          className="text-left whitespace-nowrap shrink-0 group focus:outline-none"
+          className="text-left whitespace-nowrap shrink-0 group focus:outline-none flex items-center gap-2.5"
         >
-          <span className="text-xl sm:text-2xl font-serif tracking-tight text-stone-900 group-hover:text-rose-800 transition-colors">
-            EverAfter
-          </span>
-          <span className="hidden sm:inline font-mono text-[11px] text-stone-400 ml-2">
-            Elena & Julian
-          </span>
+          <div className="w-8 h-8 rounded-full overflow-hidden shadow-xs border border-amber-200 shrink-0">
+            <img
+              src="/src/assets/images/vintage_wax_seal_crest_1794235743246.jpg"
+              alt="E & J Wax Seal"
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+          <div>
+            <span className="text-xl sm:text-2xl font-serif tracking-tight text-stone-900 group-hover:text-rose-800 transition-colors">
+              EverAfter
+            </span>
+            <span className="hidden sm:inline font-mono text-[11px] text-stone-400 ml-2">
+              Elena & Julian
+            </span>
+          </div>
         </button>
 
         {/* Zone 2: 4–5 clean single-line text navigation links */}
@@ -58,8 +72,22 @@ export const Header: React.FC<HeaderProps> = ({
           ))}
         </nav>
 
-        {/* Zone 3: 1 primary action */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        {/* Zone 3: 1 primary action cluster */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Romantic Settings & Ambiance Trigger */}
+          <button
+            onClick={onOpenRomanticSettings}
+            title="Wedding Ambiance & Classic Settings"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all ${
+              isCandlelit 
+                ? 'bg-amber-50 border-amber-300 text-amber-900 shadow-xs ring-1 ring-amber-400/30'
+                : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100'
+            }`}
+          >
+            <span className="text-sm">🕯️</span>
+            <span className="hidden sm:inline">Ambiance</span>
+          </button>
+
           <button
             onClick={onOpenAuthModal}
             className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 transition-all text-xs font-medium text-stone-800 whitespace-nowrap shrink-0"

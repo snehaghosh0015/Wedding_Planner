@@ -40,6 +40,11 @@ import { HoneymoonMatchmaker } from './components/HoneymoonMatchmaker';
 import { StoryViewerModal } from './components/StoryViewerModal';
 import { AuthRoleModal } from './components/AuthRoleModal';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { 
+  RomanticSettingsModal, 
+  AmbianceLighting, 
+  WaxSealChoice 
+} from './components/RomanticSettingsModal';
 
 export default function App() {
   // Navigation & Role States
@@ -47,6 +52,15 @@ export default function App() {
   const [currentUserName, setCurrentUserName] = useState<string>('Elena & Julian');
   const [currentUserEmail, setCurrentUserEmail] = useState<string>('elena.julian@wedding.com');
   const [activeTab, setActiveTab] = useState<string>('timeline');
+
+  // Romantic Settings & Ambiance States
+  const [isRomanticSettingsOpen, setIsRomanticSettingsOpen] = useState(false);
+  const [ambiance, setAmbiance] = useState<AmbianceLighting>('candlelit');
+  const [waxSeal, setWaxSeal] = useState<WaxSealChoice>('crimson');
+  const [vowsExcerpt, setVowsExcerpt] = useState<string>(
+    INITIAL_WEDDING_DETAILS.couple.vowsExcerpt ||
+    'I choose you today and all our tomorrows, through Florentine rainstorms, starry Tuscan hills, and every quiet morning in between.'
+  );
 
   // Modals
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -161,7 +175,15 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 flex flex-col justify-between text-stone-800 font-sans selection:bg-rose-100 selection:text-rose-900 pb-20 lg:pb-8">
+    <div 
+      className={`min-h-screen flex flex-col justify-between font-sans selection:bg-rose-100 selection:text-rose-900 pb-20 lg:pb-8 transition-colors duration-500 ${
+        ambiance === 'candlelit'
+          ? 'bg-[#FAF8F5] text-stone-800'
+          : ambiance === 'goldenHour'
+          ? 'bg-[#FDF9F3] text-stone-800'
+          : 'bg-stone-50 text-stone-800'
+      }`}
+    >
       {/* Top Header */}
       <Header
         currentRole={currentRole}
@@ -169,15 +191,23 @@ export default function App() {
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
+        onOpenRomanticSettings={() => setIsRomanticSettingsOpen(true)}
+        isCandlelit={ambiance === 'candlelit'}
       />
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-8">
-        {/* Hero Banner with Countdown & Role Switcher */}
+        {/* Hero Banner with Countdown, Wax Seal Monogram & Role Switcher */}
         <HeroBanner
           currentRole={currentRole}
           onSwitchRole={handleRoleSwitch}
           weddingDateStr={INITIAL_WEDDING_DETAILS.date}
+          waxSealUrl={
+            waxSeal === 'crimson'
+              ? '/src/assets/images/vintage_wax_seal_crest_1794235743246.jpg'
+              : undefined
+          }
+          onOpenRomanticSettings={() => setIsRomanticSettingsOpen(true)}
         />
 
         <div className="space-y-8">
@@ -321,6 +351,19 @@ export default function App() {
           onClose={() => setIsAuthModalOpen(false)}
         />
       )}
+
+      {/* Romantic Settings & Ambiance Modal */}
+      <RomanticSettingsModal
+        isOpen={isRomanticSettingsOpen}
+        onClose={() => setIsRomanticSettingsOpen(false)}
+        ambiance={ambiance}
+        onChangeAmbiance={setAmbiance}
+        waxSeal={waxSeal}
+        onChangeWaxSeal={setWaxSeal}
+        vowsExcerpt={vowsExcerpt}
+        onSaveVows={(newVows) => setVowsExcerpt(newVows)}
+        isCouple={currentRole === 'Couple'}
+      />
     </div>
   );
 }

@@ -184,21 +184,26 @@ export const HoneymoonMatchmaker: React.FC<HoneymoonMatchmakerProps> = ({
                     {destination.tagline}
                   </p>
 
-                  {/* Vibe Tags */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {destination.vibes.map((v) => {
+                  {/* Vibe Tags as Clean Unboxed Editorial Typography */}
+                  <div className="flex flex-wrap items-center gap-1.5 text-xs text-stone-500">
+                    <span className="text-[11px] font-mono text-stone-400">Vibes:</span>
+                    {destination.vibes.map((v, i) => {
                       const isMatched = matchingVibes.includes(v);
                       return (
-                        <span
-                          key={v}
-                          className={`text-[10px] font-medium px-2 py-0.5 rounded-md ${
-                            isMatched
-                              ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                              : 'bg-stone-100 text-stone-500'
-                          }`}
-                        >
-                          {v}
-                        </span>
+                        <React.Fragment key={v}>
+                          <span
+                            className={
+                              isMatched
+                                ? 'font-semibold text-rose-900 underline decoration-rose-300 underline-offset-2'
+                                : 'text-stone-500'
+                            }
+                          >
+                            {v}
+                          </span>
+                          {i < destination.vibes.length - 1 && (
+                            <span className="text-stone-300">·</span>
+                          )}
+                        </React.Fragment>
                       );
                     })}
                   </div>
