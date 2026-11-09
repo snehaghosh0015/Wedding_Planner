@@ -4,8 +4,6 @@ import { UserRole } from '../types/wedding';
 interface HeaderProps {
   currentRole: UserRole;
   currentUserName: string;
-  activeView: 'app' | 'architecture';
-  onToggleView: (view: 'app' | 'architecture') => void;
   onOpenAuthModal: () => void;
   activeTab: string;
   onSelectTab: (tabId: string) => void;
@@ -14,8 +12,6 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   currentRole,
   currentUserName,
-  activeView,
-  onToggleView,
   onOpenAuthModal,
   activeTab,
   onSelectTab,
@@ -34,10 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-8 px-4 sm:px-6 h-16">
         {/* Zone 1: Single text element wordmark */}
         <button
-          onClick={() => {
-            onToggleView('app');
-            onSelectTab('timeline');
-          }}
+          onClick={() => onSelectTab('timeline')}
           className="text-left whitespace-nowrap shrink-0 group focus:outline-none"
         >
           <span className="text-xl sm:text-2xl font-serif tracking-tight text-stone-900 group-hover:text-rose-800 transition-colors">
@@ -53,12 +46,9 @@ export const Header: React.FC<HeaderProps> = ({
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => {
-                onToggleView('app');
-                onSelectTab(item.id);
-              }}
+              onClick={() => onSelectTab(item.id)}
               className={`hover:text-stone-900 transition-colors whitespace-nowrap shrink-0 pb-1 border-b-2 ${
-                activeView === 'app' && activeTab === item.id
+                activeTab === item.id
                   ? 'border-rose-600 text-stone-900'
                   : 'border-transparent text-stone-600'
               }`}
@@ -66,28 +56,10 @@ export const Header: React.FC<HeaderProps> = ({
               {item.label}
             </button>
           ))}
-
-          <button
-            onClick={() => onToggleView('architecture')}
-            className={`hover:text-stone-900 transition-colors whitespace-nowrap shrink-0 pb-1 border-b-2 ${
-              activeView === 'architecture'
-                ? 'border-rose-600 text-stone-900'
-                : 'border-transparent text-stone-600'
-            }`}
-          >
-            System Specs
-          </button>
         </nav>
 
         {/* Zone 3: 1 primary action */}
         <div className="flex items-center gap-2.5 shrink-0">
-          <button
-            onClick={() => onToggleView(activeView === 'app' ? 'architecture' : 'app')}
-            className="lg:hidden px-2.5 py-1.5 text-xs font-medium text-stone-700 bg-stone-100 rounded-lg hover:bg-stone-200 transition-colors whitespace-nowrap"
-          >
-            {activeView === 'app' ? 'Specs' : 'App'}
-          </button>
-
           <button
             onClick={onOpenAuthModal}
             className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 transition-all text-xs font-medium text-stone-800 whitespace-nowrap shrink-0"

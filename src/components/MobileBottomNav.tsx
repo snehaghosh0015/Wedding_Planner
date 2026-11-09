@@ -5,24 +5,19 @@ import {
   CalendarCheck, 
   DollarSign, 
   Bot, 
-  Palmtree, 
-  Layers 
+  Palmtree 
 } from 'lucide-react';
 import { UserRole } from '../types/wedding';
 
 interface MobileBottomNavProps {
   activeTab: string;
-  activeView: 'app' | 'architecture';
   onSelectTab: (tabId: string) => void;
-  onToggleView: (view: 'app' | 'architecture') => void;
   userRole: UserRole;
 }
 
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   activeTab,
-  activeView,
   onSelectTab,
-  onToggleView,
   userRole,
 }) => {
   const tabs = [
@@ -39,15 +34,12 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
       <div className="flex items-center justify-around h-15 px-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
-          const isActive = activeView === 'app' && activeTab === tab.id;
+          const isActive = activeTab === tab.id;
 
           return (
             <button
               key={tab.id}
-              onClick={() => {
-                onToggleView('app');
-                onSelectTab(tab.id);
-              }}
+              onClick={() => onSelectTab(tab.id)}
               className={`flex flex-col items-center justify-center flex-1 py-1 focus:outline-none transition-colors ${
                 isActive ? 'text-rose-700 font-semibold' : 'text-stone-500 hover:text-stone-800'
               }`}
@@ -59,18 +51,6 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             </button>
           );
         })}
-
-        <button
-          onClick={() => onToggleView(activeView === 'architecture' ? 'app' : 'architecture')}
-          className={`flex flex-col items-center justify-center flex-1 py-1 focus:outline-none transition-colors ${
-            activeView === 'architecture' ? 'text-rose-700 font-semibold' : 'text-stone-500 hover:text-stone-800'
-          }`}
-        >
-          <Layers className={`w-4.5 h-4.5 ${activeView === 'architecture' ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
-          <span className="text-[10px] mt-0.5 tracking-tight">
-            Specs
-          </span>
-        </button>
       </div>
     </div>
   );

@@ -5,10 +5,7 @@ import {
   CalendarCheck, 
   DollarSign, 
   Bot, 
-  Palmtree, 
-  Layers, 
-  Sparkles,
-  ShieldAlert
+  Palmtree 
 } from 'lucide-react';
 import { 
   UserRole, 
@@ -40,7 +37,6 @@ import { LogisticsAndRsvp } from './components/LogisticsAndRsvp';
 import { BudgetTracker } from './components/BudgetTracker';
 import { AiWeddingAssistant } from './components/AiWeddingAssistant';
 import { HoneymoonMatchmaker } from './components/HoneymoonMatchmaker';
-import { ArchitecturalSpecViewer } from './components/ArchitecturalSpecViewer';
 import { StoryViewerModal } from './components/StoryViewerModal';
 import { AuthRoleModal } from './components/AuthRoleModal';
 import { MobileBottomNav } from './components/MobileBottomNav';
@@ -51,7 +47,6 @@ export default function App() {
   const [currentUserName, setCurrentUserName] = useState<string>('Elena & Julian');
   const [currentUserEmail, setCurrentUserEmail] = useState<string>('elena.julian@wedding.com');
   const [activeTab, setActiveTab] = useState<string>('timeline');
-  const [activeView, setActiveView] = useState<'app' | 'architecture'>('app');
 
   // Modals
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -171,8 +166,6 @@ export default function App() {
       <Header
         currentRole={currentRole}
         currentUserName={currentUserName}
-        activeView={activeView}
-        onToggleView={setActiveView}
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
@@ -187,137 +180,107 @@ export default function App() {
           weddingDateStr={INITIAL_WEDDING_DETAILS.date}
         />
 
-        {/* View Routing: Architectural Spec vs. Live EverAfter App */}
-        {activeView === 'architecture' ? (
-          <div className="space-y-4">
-            <div className="bg-amber-50 border border-amber-200/80 p-4 rounded-2xl flex items-center justify-between text-xs text-amber-900">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
-                <span>
-                  Viewing Full Engineering & System Architecture Specification. Switch back to live app experience at any time.
-                </span>
-              </div>
-              <button
-                onClick={() => setActiveView('app')}
-                className="font-semibold text-rose-800 underline hover:text-rose-900 whitespace-nowrap ml-4"
-              >
-                Back to Live App
-              </button>
-            </div>
-
-            <ArchitecturalSpecViewer />
-          </div>
-        ) : (
-          <div className="space-y-8">
-            {/* Desktop Navigation Segmented Bar */}
-            <div className="hidden lg:flex items-center justify-between border-b border-stone-200 pb-2">
-              <div className="flex items-center gap-2">
-                {[
-                  { id: 'timeline', label: 'Our Story Timeline', icon: Heart },
-                  { id: 'album', label: 'Live Album & 24h Stories', icon: Camera },
-                  { id: 'logistics', label: 'Logistics & RSVP', icon: CalendarCheck },
-                  ...(currentRole === 'Couple'
-                    ? [{ id: 'budget', label: 'Budget Tracker', icon: DollarSign }]
-                    : []),
-                  { id: 'assistant', label: 'AI Wedding Assistant', icon: Bot },
-                  { id: 'honeymoon', label: 'Honeymoon Matchmaker', icon: Palmtree },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  const isActive = activeTab === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => setActiveTab(item.id)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                        isActive
-                          ? 'bg-stone-900 text-white shadow-xs'
-                          : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-                      }`}
-                    >
-                      <Icon className="w-3.5 h-3.5" />
-                      <span>{item.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <button
-                onClick={() => setActiveView('architecture')}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-medium text-stone-600 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 rounded-xl transition-colors"
-              >
-                <Layers className="w-3.5 h-3.5" />
-                <span>Architecture Specs</span>
-              </button>
-            </div>
-
-            {/* Active Module Container */}
-            <div className="transition-opacity duration-200">
-              {activeTab === 'timeline' && (
-                <StorylineTimeline
-                  milestones={milestones}
-                  userRole={currentRole}
-                  onAddMilestone={handleAddMilestone}
-                />
-              )}
-
-              {activeTab === 'album' && (
-                <LiveWeddingAlbum
-                  photos={photos}
-                  stories={stories}
-                  userRole={currentRole}
-                  userName={currentUserName}
-                  onOpenStory={(idx) => setStoryViewerIndex(idx)}
-                  onUploadPhoto={handleUploadPhoto}
-                  onPostStory={handlePostStory}
-                  onToggleLike={handleToggleLike}
-                />
-              )}
-
-              {activeTab === 'logistics' && (
-                <LogisticsAndRsvp
-                  weddingDetails={INITIAL_WEDDING_DETAILS}
-                  guests={guests}
-                  userRole={currentRole}
-                  currentGuestName={currentUserName}
-                  onUpdateGuestStatus={handleUpdateGuestStatus}
-                  onAddGuest={handleAddGuest}
-                />
-              )}
-
-              {activeTab === 'budget' && (
-                <BudgetTracker
-                  expenses={expenses}
-                  totalBudget={totalBudget}
-                  userRole={currentRole}
-                  onUpdateTotalBudget={handleUpdateTotalBudget}
-                  onAddExpense={handleAddExpense}
-                  onToggleExpensePaid={handleToggleExpensePaid}
-                />
-              )}
-
-              {activeTab === 'assistant' && (
-                <AiWeddingAssistant
-                  userRole={currentRole}
-                  weddingContext={{
-                    rsvpStats,
-                    budgetStats: {
-                      total: budgetStats.totalBudget,
-                      spent: budgetStats.totalActual,
-                      remaining: budgetStats.totalRemainingBalance,
-                    },
-                  }}
-                />
-              )}
-
-              {activeTab === 'honeymoon' && (
-                <HoneymoonMatchmaker
-                  destinations={INITIAL_HONEYMOON_DESTINATIONS}
-                  remainingBudget={budgetStats.totalRemainingBalance}
-                />
-              )}
+        <div className="space-y-8">
+          {/* Desktop Navigation Segmented Bar */}
+          <div className="hidden lg:flex items-center justify-between border-b border-stone-200 pb-2">
+            <div className="flex items-center gap-2">
+              {[
+                { id: 'timeline', label: 'Our Story Timeline', icon: Heart },
+                { id: 'album', label: 'Live Album & 24h Stories', icon: Camera },
+                { id: 'logistics', label: 'Logistics & RSVP', icon: CalendarCheck },
+                ...(currentRole === 'Couple'
+                  ? [{ id: 'budget', label: 'Budget Tracker', icon: DollarSign }]
+                  : []),
+                { id: 'assistant', label: 'AI Wedding Assistant', icon: Bot },
+                { id: 'honeymoon', label: 'Honeymoon Matchmaker', icon: Palmtree },
+              ].map((item) => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                      isActive
+                        ? 'bg-stone-900 text-white shadow-xs'
+                        : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
-        )}
+
+          {/* Active Module Container */}
+          <div className="transition-opacity duration-200">
+            {activeTab === 'timeline' && (
+              <StorylineTimeline
+                milestones={milestones}
+                userRole={currentRole}
+                onAddMilestone={handleAddMilestone}
+              />
+            )}
+
+            {activeTab === 'album' && (
+              <LiveWeddingAlbum
+                photos={photos}
+                stories={stories}
+                userRole={currentRole}
+                userName={currentUserName}
+                onOpenStory={(idx) => setStoryViewerIndex(idx)}
+                onUploadPhoto={handleUploadPhoto}
+                onPostStory={handlePostStory}
+                onToggleLike={handleToggleLike}
+              />
+            )}
+
+            {activeTab === 'logistics' && (
+              <LogisticsAndRsvp
+                weddingDetails={INITIAL_WEDDING_DETAILS}
+                guests={guests}
+                userRole={currentRole}
+                currentGuestName={currentUserName}
+                onUpdateGuestStatus={handleUpdateGuestStatus}
+                onAddGuest={handleAddGuest}
+              />
+            )}
+
+            {activeTab === 'budget' && (
+              <BudgetTracker
+                expenses={expenses}
+                totalBudget={totalBudget}
+                userRole={currentRole}
+                onUpdateTotalBudget={handleUpdateTotalBudget}
+                onAddExpense={handleAddExpense}
+                onToggleExpensePaid={handleToggleExpensePaid}
+              />
+            )}
+
+            {activeTab === 'assistant' && (
+              <AiWeddingAssistant
+                userRole={currentRole}
+                weddingContext={{
+                  rsvpStats,
+                  budgetStats: {
+                    total: budgetStats.totalBudget,
+                    spent: budgetStats.totalActual,
+                    remaining: budgetStats.totalRemainingBalance,
+                  },
+                }}
+              />
+            )}
+
+            {activeTab === 'honeymoon' && (
+              <HoneymoonMatchmaker
+                destinations={INITIAL_HONEYMOON_DESTINATIONS}
+                remainingBudget={budgetStats.totalRemainingBalance}
+              />
+            )}
+          </div>
+        </div>
       </main>
 
       {/* Footer */}
@@ -335,9 +298,7 @@ export default function App() {
       {/* Mobile Bottom Navigation (Ergonomic Thumb Zone) */}
       <MobileBottomNav
         activeTab={activeTab}
-        activeView={activeView}
         onSelectTab={setActiveTab}
-        onToggleView={setActiveView}
         userRole={currentRole}
       />
 
