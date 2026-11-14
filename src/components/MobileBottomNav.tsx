@@ -5,7 +5,8 @@ import {
   CalendarCheck, 
   DollarSign, 
   Bot, 
-  Palmtree 
+  Palmtree,
+  Users
 } from 'lucide-react';
 import { UserRole } from '../types/wedding';
 
@@ -24,6 +25,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
     { id: 'timeline', label: 'Story', icon: Heart },
     { id: 'album', label: 'Album', icon: Camera },
     { id: 'logistics', label: 'RSVP', icon: CalendarCheck },
+    { id: 'seating', label: 'Seating', icon: Users },
     ...(userRole === 'Couple' ? [{ id: 'budget', label: 'Budget', icon: DollarSign }] : []),
     { id: 'assistant', label: 'AI Concierge', icon: Bot },
     { id: 'honeymoon', label: 'Honeymoon', icon: Palmtree },
@@ -31,7 +33,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 
   return (
     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200/90 shadow-lg pb-safe">
-      <div className="flex items-center justify-around h-15 px-2">
+      <div className="flex items-center justify-around h-15 px-1">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -46,7 +48,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               }`}
             >
               <Icon className={`w-4.5 h-4.5 ${isActive ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
-              <span className="text-[10px] mt-0.5 tracking-tight truncate max-w-14">
+              <span className="text-[10px] mt-0.5 tracking-tight truncate max-w-12">
                 {tab.label}
               </span>
             </button>

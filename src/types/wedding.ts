@@ -61,7 +61,7 @@ export interface StoryMilestone {
   description: string;
   quote?: string;
   imageUrl: string;
-  category: 'Met' | 'First Date' | 'Adventure' | 'The Move' | 'Proposal' | 'The Ring';
+  category: 'Met' | 'First Date' | 'Adventure' | 'The Move' | 'Proposal' | 'The Ring' | 'Promise' | 'Tradition';
 }
 
 export interface AlbumPhoto {

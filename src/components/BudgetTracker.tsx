@@ -13,11 +13,13 @@ import {
 } from 'lucide-react';
 import { Expense, ExpenseCategory, UserRole } from '../types/wedding';
 import { calculateBudgetMetrics, getUpcomingDues } from '../utils/budget';
+import { SupportedCurrency, formatGlobalCurrency, CURRENCIES } from '../utils/globalization';
 
 interface BudgetTrackerProps {
   expenses: Expense[];
   totalBudget: number;
   userRole: UserRole;
+  currency?: SupportedCurrency;
   onUpdateTotalBudget: (newBudget: number) => void;
   onAddExpense: (expense: Expense) => void;
   onToggleExpensePaid: (expenseId: string) => void;
@@ -27,12 +29,14 @@ export const BudgetTracker: React.FC<BudgetTrackerProps> = ({
   expenses,
   totalBudget,
   userRole,
+  currency = 'EUR',
   onUpdateTotalBudget,
   onAddExpense,
   onToggleExpensePaid,
 }) => {
   const [isEditingBudget, setIsEditingBudget] = useState(false);
   const [budgetValue, setBudgetValue] = useState(totalBudget.toString());
+  const fmt = (amt: number) => formatGlobalCurrency(amt, currency);
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('All');
 
@@ -170,20 +174,20 @@ export const BudgetTracker: React.FC<BudgetTrackerProps> = ({
             ) : (
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl sm:text-4xl font-serif text-white tabular-nums">
-                  ${metrics.totalBudget.toLocaleString()}
+                  {fmt(metrics.totalBudget)}
                 </span>
                 <span className="text-xs text-stone-400 font-mono">
-                  Target Fund
+                  Target Fund ({currency})
                 </span>
               </div>
             )}
 
             <div className="flex items-center gap-4 text-xs text-stone-300 pt-1">
-              <span>Spent: <strong className="text-white">${metrics.totalActual.toLocaleString()}</strong></span>
+              <span>Spent: <strong className="text-white">{fmt(metrics.totalActual)}</strong></span>
               <span>·</span>
-              <span>Paid Out: <strong className="text-emerald-400">${metrics.totalPaid.toLocaleString()}</strong></span>
+              <span>Paid Out: <strong className="text-emerald-400">{fmt(metrics.totalPaid)}</strong></span>
               <span>·</span>
-              <span>Remaining: <strong className="text-rose-300">${metrics.totalRemainingBalance.toLocaleString()}</strong></span>
+              <span>Remaining: <strong className="text-rose-300">{fmt(metrics.totalRemainingBalance)}</strong></span>
             </div>
           </div>
 
@@ -203,7 +207,7 @@ export const BudgetTracker: React.FC<BudgetTrackerProps> = ({
             </div>
             <div className="flex items-center justify-between text-[11px] text-stone-400">
               <span>Paid: {metrics.percentagePaid}%</span>
-              <span>Dues Left: ${metrics.totalUpcomingDues.toLocaleString()}</span>
+              <span>Dues Left: {fmt(metrics.totalUpcomingDues)}</span>
             </div>
           </div>
         </div>
@@ -266,7 +270,7 @@ export const BudgetTracker: React.FC<BudgetTrackerProps> = ({
                     Due {due.dueDate}
                   </span>
                   <span className="font-serif font-bold text-stone-900 tabular-nums">
-                    ${due.amountDue.toLocaleString()}
+                    {fmt(due.amountDue)}
                   </span>
                 </div>
               </div>
@@ -299,10 +303,10 @@ export const BudgetTracker: React.FC<BudgetTrackerProps> = ({
                   <span className="font-mono text-[11px]">{data.percentageOfTotal}%</span>
                 </div>
                 <p className="text-lg font-serif text-stone-900 mt-1 tabular-nums">
-                  ${data.actual.toLocaleString()}
+                  {fmt(data.actual)}
                 </p>
                 <div className="flex items-center justify-between text-[11px] text-stone-400 mt-1">
-                  <span>Paid: ${data.paid.toLocaleString()}</span>
+                  <span>Paid: {fmt(data.paid)}</span>
                   <span>{data.itemCount} items</span>
                 </div>
               </div>
@@ -355,10 +359,10 @@ export const BudgetTracker: React.FC<BudgetTrackerProps> = ({
               <div className="flex items-center justify-between sm:justify-end gap-5">
                 <div className="text-right">
                   <p className="font-serif font-bold text-stone-900 text-sm tabular-nums">
-                    ${expense.actualCost.toLocaleString()}
+                    {fmt(expense.actualCost)}
                   </p>
                   <p className="text-[11px] text-stone-500">
-                    Paid: ${expense.paidAmount.toLocaleString()} (
+                    Paid: {fmt(expense.paidAmount)} (
                     {Math.round((expense.paidAmount / expense.actualCost) * 100)}%)
                   </p>
                 </div>

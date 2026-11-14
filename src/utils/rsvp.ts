@@ -64,17 +64,23 @@ export function calculateRsvpStats(guests: Guest[]): RsvpStats {
 export function filterGuests(
   guests: Guest[],
   statusFilter: 'All' | RsvpStatus,
-  searchQuery: string = ''
+  searchQuery: string = '',
+  dietaryFilter: 'All' | DietaryOption = 'All'
 ): Guest[] {
   const query = searchQuery.trim().toLowerCase();
 
-  return guests.filter(guest => {
+  return guests.filter((guest) => {
     const matchesStatus = statusFilter === 'All' || guest.status === statusFilter;
-    const matchesQuery = !query || 
+    const matchesDietary =
+      dietaryFilter === 'All' ||
+      guest.dietary === dietaryFilter ||
+      (guest.hasPlusOne && guest.plusOneDietary === dietaryFilter);
+    const matchesQuery =
+      !query ||
       guest.name.toLowerCase().includes(query) ||
       guest.email.toLowerCase().includes(query) ||
       (guest.plusOneName && guest.plusOneName.toLowerCase().includes(query));
 
-    return matchesStatus && matchesQuery;
+    return matchesStatus && matchesDietary && matchesQuery;
   });
 }

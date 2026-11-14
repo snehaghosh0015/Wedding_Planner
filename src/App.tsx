@@ -5,7 +5,10 @@ import {
   CalendarCheck, 
   DollarSign, 
   Bot, 
-  Palmtree 
+  Palmtree,
+  Users,
+  QrCode,
+  Globe
 } from 'lucide-react';
 import { 
   UserRole, 
@@ -28,12 +31,19 @@ import {
 } from './data/weddingData';
 import { calculateRsvpStats } from './utils/rsvp';
 import { calculateBudgetMetrics } from './utils/budget';
+import { 
+  SupportedCurrency, 
+  SupportedLanguage, 
+  SupportedTimezone, 
+  TRANSLATIONS 
+} from './utils/globalization';
 
 import { Header } from './components/Header';
 import { HeroBanner } from './components/HeroBanner';
 import { StorylineTimeline } from './components/StorylineTimeline';
 import { LiveWeddingAlbum } from './components/LiveWeddingAlbum';
 import { LogisticsAndRsvp } from './components/LogisticsAndRsvp';
+import { GuestSeatingPlan } from './components/GuestSeatingPlan';
 import { BudgetTracker } from './components/BudgetTracker';
 import { AiWeddingAssistant } from './components/AiWeddingAssistant';
 import { HoneymoonMatchmaker } from './components/HoneymoonMatchmaker';
@@ -45,6 +55,8 @@ import {
   AmbianceLighting, 
   WaxSealChoice 
 } from './components/RomanticSettingsModal';
+import { WeddingCardModal } from './components/WeddingCardModal';
+import { GlobalSettingsModal } from './components/GlobalSettingsModal';
 
 export default function App() {
   // Navigation & Role States
@@ -52,6 +64,15 @@ export default function App() {
   const [currentUserName, setCurrentUserName] = useState<string>('Elena & Julian');
   const [currentUserEmail, setCurrentUserEmail] = useState<string>('elena.julian@wedding.com');
   const [activeTab, setActiveTab] = useState<string>('timeline');
+
+  // Globalization Preferences (Currency, Timezone, Language)
+  const [currency, setCurrency] = useState<SupportedCurrency>('EUR');
+  const [timezone, setTimezone] = useState<SupportedTimezone>('cet');
+  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const [isGlobalSettingsOpen, setIsGlobalSettingsOpen] = useState(false);
+
+  // Wedding Card & QR Scanner Modal
+  const [isWeddingCardOpen, setIsWeddingCardOpen] = useState(false);
 
   // Romantic Settings & Ambiance States
   const [isRomanticSettingsOpen, setIsRomanticSettingsOpen] = useState(false);
@@ -73,6 +94,9 @@ export default function App() {
   const [guests, setGuests] = useState<Guest[]>(INITIAL_GUESTS);
   const [expenses, setExpenses] = useState<Expense[]>(INITIAL_EXPENSES);
   const [totalBudget, setTotalBudget] = useState<number>(75000);
+
+  // Translations
+  const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
   // Context Metrics for Assistant & Honeymoon
   const rsvpStats = calculateRsvpStats(guests);
@@ -146,6 +170,18 @@ export default function App() {
     );
   };
 
+  const handleReassignTable = (guestId: string, newTable: number) => {
+    setGuests((prev) =>
+      prev.map((g) => (g.id === guestId ? { ...g, tableNumber: newTable } : g))
+    );
+  };
+
+  const handleCheckInGuest = (guestId: string) => {
+    setGuests((prev) =>
+      prev.map((g) => (g.id === guestId ? { ...g, status: 'Confirmed' as RsvpStatus } : g))
+    );
+  };
+
   const handleAddGuest = (g: Guest) => {
     setGuests((prev) => [g, ...prev]);
   };
@@ -192,7 +228,11 @@ export default function App() {
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onOpenRomanticSettings={() => setIsRomanticSettingsOpen(true)}
+        onOpenGlobalSettings={() => setIsGlobalSettingsOpen(true)}
+        onOpenWeddingCard={() => setIsWeddingCardOpen(true)}
         isCandlelit={ambiance === 'candlelit'}
+        currency={currency}
+        language={language}
       />
 
       {/* Main Content Area */}
@@ -215,14 +255,15 @@ export default function App() {
           <div className="hidden lg:flex items-center justify-between border-b border-stone-200 pb-2">
             <div className="flex items-center gap-2">
               {[
-                { id: 'timeline', label: 'Our Story Timeline', icon: Heart },
-                { id: 'album', label: 'Live Album & 24h Stories', icon: Camera },
-                { id: 'logistics', label: 'Logistics & RSVP', icon: CalendarCheck },
+                { id: 'timeline', label: t.story || 'Our Story', icon: Heart },
+                { id: 'album', label: t.album || 'Live Album', icon: Camera },
+                { id: 'logistics', label: t.rsvp || 'Logistics & RSVP', icon: CalendarCheck },
+                { id: 'seating', label: t.seating || 'Seating Plan', icon: Users },
                 ...(currentRole === 'Couple'
-                  ? [{ id: 'budget', label: 'Budget Tracker', icon: DollarSign }]
+                  ? [{ id: 'budget', label: t.budget || 'Budget Tracker', icon: DollarSign }]
                   : []),
-                { id: 'assistant', label: 'AI Wedding Assistant', icon: Bot },
-                { id: 'honeymoon', label: 'Honeymoon Matchmaker', icon: Palmtree },
+                { id: 'assistant', label: t.concierge || 'AI Concierge', icon: Bot },
+                { id: 'honeymoon', label: t.honeymoon || 'Honeymoon Matchmaker', icon: Palmtree },
               ].map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
@@ -241,6 +282,25 @@ export default function App() {
                   </button>
                 );
               })}
+            </div>
+
+            {/* Quick Action Buttons on Desktop */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsWeddingCardOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-800 text-xs font-semibold transition-all shadow-xs"
+              >
+                <QrCode className="w-3.5 h-3.5 text-rose-800" />
+                <span>Wedding Card & Pass</span>
+              </button>
+
+              <button
+                onClick={() => setIsGlobalSettingsOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-800 text-xs font-semibold transition-all shadow-xs"
+              >
+                <Globe className="w-3.5 h-3.5 text-rose-700" />
+                <span>{currency} · {timezone.toUpperCase()}</span>
+              </button>
             </div>
           </div>
 
@@ -275,6 +335,17 @@ export default function App() {
                 currentGuestName={currentUserName}
                 onUpdateGuestStatus={handleUpdateGuestStatus}
                 onAddGuest={handleAddGuest}
+                onUpdateTableNumber={handleReassignTable}
+                onOpenWeddingCard={() => setIsWeddingCardOpen(true)}
+                selectedTimezone={timezone}
+              />
+            )}
+
+            {activeTab === 'seating' && (
+              <GuestSeatingPlan
+                guests={guests}
+                userRole={currentRole}
+                onUpdateTableNumber={handleReassignTable}
               />
             )}
 
@@ -283,6 +354,7 @@ export default function App() {
                 expenses={expenses}
                 totalBudget={totalBudget}
                 userRole={currentRole}
+                currency={currency}
                 onUpdateTotalBudget={handleUpdateTotalBudget}
                 onAddExpense={handleAddExpense}
                 onToggleExpensePaid={handleToggleExpensePaid}
@@ -307,6 +379,7 @@ export default function App() {
               <HoneymoonMatchmaker
                 destinations={INITIAL_HONEYMOON_DESTINATIONS}
                 remainingBudget={budgetStats.totalRemainingBalance}
+                currency={currency}
               />
             )}
           </div>
@@ -320,7 +393,7 @@ export default function App() {
             EverAfter — Elena Vance & Julian Hayes
           </p>
           <p className="text-stone-400 text-[11px]">
-            Villa La Selva Estate, Tuscany · September 18, 2027
+            Villa La Selva Estate, Tuscany · September 18, 2027 · {currency} / {timezone.toUpperCase()}
           </p>
         </div>
       </footer>
@@ -363,6 +436,28 @@ export default function App() {
         vowsExcerpt={vowsExcerpt}
         onSaveVows={(newVows) => setVowsExcerpt(newVows)}
         isCouple={currentRole === 'Couple'}
+      />
+
+      {/* Printable Wedding Invitation Card & QR Scanner Modal */}
+      <WeddingCardModal
+        isOpen={isWeddingCardOpen}
+        onClose={() => setIsWeddingCardOpen(false)}
+        guests={guests}
+        onCheckInGuest={handleCheckInGuest}
+        selectedTimezone={timezone}
+        selectedLanguage={language}
+      />
+
+      {/* Global Settings Modal (Currency, Timezone, Language, Travel) */}
+      <GlobalSettingsModal
+        isOpen={isGlobalSettingsOpen}
+        onClose={() => setIsGlobalSettingsOpen(false)}
+        currency={currency}
+        onChangeCurrency={setCurrency}
+        timezone={timezone}
+        onChangeTimezone={setTimezone}
+        language={language}
+        onChangeLanguage={setLanguage}
       />
     </div>
   );

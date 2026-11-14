@@ -14,17 +14,21 @@ import {
 } from 'lucide-react';
 import { HoneymoonDestination, HoneymoonVibe } from '../types/wedding';
 import { matchHoneymoonDestinations } from '../utils/honeymoon';
+import { SupportedCurrency, formatGlobalCurrency } from '../utils/globalization';
 
 interface HoneymoonMatchmakerProps {
   destinations: HoneymoonDestination[];
   remainingBudget: number;
+  currency?: SupportedCurrency;
 }
 
 export const HoneymoonMatchmaker: React.FC<HoneymoonMatchmakerProps> = ({
   destinations,
   remainingBudget,
+  currency = 'EUR',
 }) => {
   const [budgetCap, setBudgetCap] = useState<number>(remainingBudget > 0 ? remainingBudget : 15000);
+  const fmt = (amt: number) => formatGlobalCurrency(amt, currency);
   const [selectedVibes, setSelectedVibes] = useState<HoneymoonVibe[]>([
     'Beach',
     'Gastronomy',
@@ -81,7 +85,7 @@ export const HoneymoonMatchmaker: React.FC<HoneymoonMatchmakerProps> = ({
                 Allocated Honeymoon Budget Cap
               </label>
               <span className="text-lg font-serif font-bold text-stone-900 tabular-nums">
-                ${budgetCap.toLocaleString()}
+                {fmt(budgetCap)}
               </span>
             </div>
 
@@ -96,9 +100,9 @@ export const HoneymoonMatchmaker: React.FC<HoneymoonMatchmakerProps> = ({
             />
 
             <div className="flex justify-between text-[11px] text-stone-400 font-mono">
-              <span>$5,000 (Chic Cozy)</span>
-              <span>$15,000 (Luxury Boutique)</span>
-              <span>$25,000+ (Ultra Grand)</span>
+              <span>{fmt(5000)} (Chic Cozy)</span>
+              <span>{fmt(15000)} (Luxury Boutique)</span>
+              <span>{fmt(25000)}+ (Ultra Grand)</span>
             </div>
           </div>
 
@@ -213,7 +217,7 @@ export const HoneymoonMatchmaker: React.FC<HoneymoonMatchmakerProps> = ({
                     <div className="flex items-center justify-between pb-2 border-b border-stone-200/60 font-semibold text-stone-900">
                       <span>Total Estimated Cost</span>
                       <span className="font-serif text-base tabular-nums">
-                        ${destination.estimatedCostTotal.toLocaleString()}
+                        {fmt(destination.estimatedCostTotal)}
                       </span>
                     </div>
 
@@ -221,19 +225,19 @@ export const HoneymoonMatchmaker: React.FC<HoneymoonMatchmakerProps> = ({
                       <div>
                         <span className="block text-stone-400">Flights (x2)</span>
                         <span className="font-semibold text-stone-800">
-                          ${destination.costBreakdown.flights.toLocaleString()}
+                          {fmt(destination.costBreakdown.flights)}
                         </span>
                       </div>
                       <div>
                         <span className="block text-stone-400">Luxury Stay</span>
                         <span className="font-semibold text-stone-800">
-                          ${(destination.costBreakdown.luxuryStayPerNight * destination.costBreakdown.nights).toLocaleString()}
+                          {fmt(destination.costBreakdown.luxuryStayPerNight * destination.costBreakdown.nights)}
                         </span>
                       </div>
                       <div>
                         <span className="block text-stone-400">Dining/Tours</span>
                         <span className="font-semibold text-stone-800">
-                          ${destination.costBreakdown.activitiesAndDining.toLocaleString()}
+                          {fmt(destination.costBreakdown.activitiesAndDining)}
                         </span>
                       </div>
                     </div>
@@ -246,8 +250,8 @@ export const HoneymoonMatchmaker: React.FC<HoneymoonMatchmakerProps> = ({
                         }`}
                       >
                         {isSurplus
-                          ? `+$${varianceAmount.toLocaleString()} surplus`
-                          : `-$${Math.abs(varianceAmount).toLocaleString()} stretch`}
+                          ? `+${fmt(varianceAmount)} surplus`
+                          : `-${fmt(Math.abs(varianceAmount))} stretch`}
                       </span>
                     </div>
                   </div>

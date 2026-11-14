@@ -83,6 +83,26 @@ export const INITIAL_STORY_MILESTONES: StoryMilestone[] = [
     imageUrl: '/src/assets/images/story_proposal_moment_1794230267202.jpg',
     category: 'Proposal',
   },
+  {
+    id: 'm5',
+    title: 'Paris Sunrise on Pont des Arts',
+    date: 'April 19, 2026',
+    location: 'Seine Riverbank, Paris',
+    description: 'Walking hand-in-hand along the Seine river at dawn while Notre-Dame glowed under pastel pink skies, exchanging quiet whispered promises of a shared lifetime.',
+    quote: '"The entire city felt asleep, as if the golden dawn was performing exclusively for us."',
+    imageUrl: '/src/assets/images/story_paris_sunrise_1794414627287.jpg',
+    category: 'Promise',
+  },
+  {
+    id: 'm6',
+    title: 'The Chianti Vineyard Harvest',
+    date: 'September 15, 2026',
+    location: 'Castelnuovo Berardenga, Tuscany',
+    description: 'Spending autumn harvesting ripe Sangiovese grapes alongside local vintners at Villa La Selva, hand-bottling the vintage reserve to be served at our wedding banquet.',
+    quote: '"Tasting the very vintage that our dearest friends and family will raise in a toast next year made every dream tangible."',
+    imageUrl: '/src/assets/images/story_vineyard_harvest_1794414627265.jpg',
+    category: 'Tradition',
+  },
 ];
 
 export const INITIAL_STORIES: StoryMoment[] = [
@@ -184,6 +204,28 @@ export const INITIAL_ALBUM_PHOTOS: AlbumPhoto[] = [
     likesCount: 39,
     isLiked: false,
     tags: ['Venue', 'Tuscany'],
+  },
+  {
+    id: 'p7',
+    uploaderName: 'Elena & Julian',
+    uploaderRole: 'Couple',
+    imageUrl: '/src/assets/images/story_paris_sunrise_1794414627287.jpg',
+    caption: 'Pastel dawn on Pont des Arts in Paris, sharing promises under Notre-Dame’s silhouette.',
+    timestamp: '4 days ago',
+    likesCount: 92,
+    isLiked: true,
+    tags: ['Couple', 'Paris', 'SunriseWalk'],
+  },
+  {
+    id: 'p8',
+    uploaderName: 'Elena & Julian',
+    uploaderRole: 'Couple',
+    imageUrl: '/src/assets/images/story_vineyard_harvest_1794414627265.jpg',
+    caption: 'Harvesting Chianti Sangiovese grapes for our wedding banquet wine reserve.',
+    timestamp: '5 days ago',
+    likesCount: 77,
+    isLiked: false,
+    tags: ['Tradition', 'Chianti', 'TuscanWine'],
   },
 ];
 
